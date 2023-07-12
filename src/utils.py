@@ -38,7 +38,7 @@ class OpenPyXL:
 
         for result in results:
             try:
-                ws[f"A{row}"] = result["coffee"]
+                ws[f"A{row}"] = result["coffee"]            # 예외처리는 그냥 결측 값으로
             except:
                 pass
             try:

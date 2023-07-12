@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from typing import Optional, Union, Dict, List
 
-class_dict = {"total_num_of_reviews" : "_2pgHN-ntx6",
+class_dict = {"total_num_of_reviews" : "_2pgHN-ntx6",           # 크롤링 할 element의 class
               "page_elements" : "_1HJarNZHiI._2UJrM31-Ry",
               "next_button" : "fAUKm1ewwo._2Ar8-aEUTq",
               "review_ul_parent" : "_180GG7_7yx",
@@ -44,6 +44,7 @@ def get_review_in_page(driver : webdriver) -> list[Dict[str, Union[str, int]]]:
             by = By.TAG_NAME,
             value = 'li'
         ):
+            review_count += 1
             try:
                 user = review.find_element(By.CLASS_NAME, class_dict['user']).text
                 coffee, grind = re.split('\s/\s',review.find_element(By.CLASS_NAME, class_dict['coffee']).text)
@@ -66,11 +67,6 @@ def get_review_in_page(driver : webdriver) -> list[Dict[str, Union[str, int]]]:
             except:
                 continue
             
-            review_count += 1
-            
-        if review_count >= stop:
-            break
-
         if review_count % 10000 == 0:       # 10000번마다 백업
             OpenPyXL.save_file(save_data)
         
@@ -80,6 +76,10 @@ def get_review_in_page(driver : webdriver) -> list[Dict[str, Union[str, int]]]:
     return save_data
 
 def ppcs_coffee(coffee : str) -> list[str, str]:
+    """
+    coffee에 대한 전처리 
+    ex) 1kg_블루드래곤어쩌구 -> ['1000g', '블루드래곤어쩌구'] 
+    """            
     coffee = coffee[6:]
     coffee = re.sub('1kg', '1000g', coffee)
     coffee = re.sub('(new)', '', coffee)
@@ -89,9 +89,12 @@ def ppcs_coffee(coffee : str) -> list[str, str]:
     return coffee if len(coffee) == 2 else [None, coffee[0]]    # 예외 발생 가능
 
 def ppcs_grind_and_get_satisfaction(grind : str) -> list[str, str]:
+    """
+    grind 정보와 맛 만족도를 한번에 가져옴, 이에 대한 전처리
+    """
     grind = grind[7:]
     grind = re.sub('[0-9][.]\s?', '', grind)
-    grind, satisfaction = re.split('[\r\n|\r|\n]', grind)
+    grind, satisfaction = re.split('[\r\n|\r|\n]', grind)       # '\n'을 기준으로 grind정보와 맛 만족도 문단 구분
     satisfaction = re.sub('\s', '', satisfaction)
     satisfaction = re.split('맛만족도', satisfaction)[1][:4]
 

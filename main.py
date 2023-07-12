@@ -5,7 +5,7 @@ from src.utils import OpenPyXL
 from src.utils import get_driver
 from src.crawling_stratege import get_review_in_page
 
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"      # 사용자에 맞게 수정 : 구글에 user agent 검색
 url = "https://smartstore.naver.com/blackbeans/products/310288062"
 
 driver = get_driver(user_agent = user_agent)
